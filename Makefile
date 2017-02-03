@@ -1,4 +1,5 @@
-FLAGS = -DDEBUG 
+FLAGS = -DDEBUG -DDEBUG1 -DAPPLY_LLL -DDIAG_DOMINANT
+ETC_FLAGS = -DDEBUG2 -DBABAI_ROUNDING 
 
 all: ggh-gen-keys ggh-encrypt ggh-decrypt
 

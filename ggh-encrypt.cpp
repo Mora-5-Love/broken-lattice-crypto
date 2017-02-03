@@ -18,7 +18,9 @@ using namespace std;
 using namespace NTL;
 
 
+/* prototype */
 vec_ZZ encrypt( int, mat_ZZ, ZZ );
+
 
 
 int main( int argc, char *argv[] )
@@ -42,8 +44,10 @@ int main( int argc, char *argv[] )
 	publicKeyFile >> mat_public;
 	publicKeyFile.close();
 
+#ifdef DEBUG2
 	cout << "GGH public dim   = " << mat_dim << endl;
 	cout << "GGH public basis = " << endl << mat_public << endl;
+#endif
 
 	ifstream plainTextFile;
 	ofstream cipherTextFile;
@@ -68,8 +72,8 @@ int main( int argc, char *argv[] )
 }
 
 
-/* encrypt a message that is a large integer as a perturbed lattice point.  
- * the message is first mapped into a vector which represents the integer
+/* encrypt a message (large integer) as a perturbed lattice point.  
+ * the message is mapped into a vector which represents the integer
  * linear combination of the basis vectors.
  */
 vec_ZZ encrypt( int n, mat_ZZ public_basis, ZZ msg )
@@ -87,7 +91,8 @@ vec_ZZ encrypt( int n, mat_ZZ public_basis, ZZ msg )
 
 	for (int j=0; j < n; j++) {
 #ifdef PERTURB
-		delta[j] = (rand() % 2 ? to_ZZ(1) : to_ZZ(-1));
+		int tiny_value = (rand() % 3) - 1;
+		delta[j] = to_ZZ( tiny_value );
 #else
 		delta[j] = to_ZZ(0);
 #endif
@@ -96,9 +101,9 @@ vec_ZZ encrypt( int n, mat_ZZ public_basis, ZZ msg )
 	vec_ZZ cipher_vec;
 	cipher_vec = public_basis * plain_vec + delta;
 
-#ifdef DEBUG1
-	cout << "Enc(" << plain_vec << " -> ";
-	cout << cipher_vec << ")" << endl;
+#ifdef DEBUG
+	// show what is going into the channel
+	cout << "ENC[" << plain_vec << " -> " << cipher_vec << "]" << endl;
 #endif
 
 	return cipher_vec;
